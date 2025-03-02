@@ -3,21 +3,9 @@ const adminMiddleware = require("../middleware/admin");
 const { Admin, Course } = require("../db");
 const router = Router();
 
-async function usernameTaken(uname) {
-  const admin = await User.findOne({ username: uname });
-  return admin ? true : false;
-}
-
-// Admin Routes
 router.post("/signup", async (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
-
-  if (usernameTaken(username)) {
-    return res
-      .status(404)
-      .json({ msg: "Admin user with the provided username already exists" });
-  }
 
   await Admin.create({
     username: username,
@@ -33,8 +21,7 @@ router.post("/courses", adminMiddleware, async (req, res) => {
     title: req.body.title || " ",
     description: req.body.description || " ",
     price: parseFloat(req.body.price) || 0,
-    imgURL: req.body.imageLink || " ",
-    published: true,
+    imgURL: req.body.imgURL || " ",
   };
 
   const newCourse = await Course.create({ ...course });
@@ -43,13 +30,9 @@ router.post("/courses", adminMiddleware, async (req, res) => {
     .json({ message: "Course created successfully", courseId: newCourse._id });
 });
 
-router.get("/courses", adminMiddleware, (req, res) => {
-  const courses = Course.find({});
-  const publishedCourses = courses.filter((course, _) => {
-    course.published ? true : false;
-  });
-
-  return res.status(200).json({ courses: publishedCourses });
+router.get("/courses", adminMiddleware, async (req, res) => {
+  const courses = await Course.find({}); // no filter because need all courses
+  return res.status(200).json({ courses: courses });
 });
 
 module.exports = router;
