@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const JWT_SECRET = "100xDevs";
+const { JWT_SECRET } = require("../config");
 
 // Middleware for handling auth
 function adminMiddleware(req, res, next) {
@@ -8,8 +8,13 @@ function adminMiddleware(req, res, next) {
 
   try {
     const admin = jwt.verify(token, JWT_SECRET);
-    if (admin.username) next();
-    else {
+    if (admin.username){
+      // adding username to prevent user sending 
+      // another username in the header
+      // and better for accessing in other routes
+      req.username = admin.username;
+      next();
+    } else {
       res.status(403).json({
         msg: "You are not authenticated",
       });

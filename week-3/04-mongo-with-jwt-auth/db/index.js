@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 // Connect to MongoDB
 mongoose.connect(
-  "mongodb+srv://pvn:pvnbhat@cluster0.gxxfv.mongodb.net/user_app?retryWrites=true&w=majority&appName=Cluster0"
+  "mongodb+srv://pvn:pavan@cluster0.gxxfv.mongodb.net/user_app?retryWrites=true&w=majority&appName=Cluster0"
 );
 
 // Define schemas
@@ -27,7 +27,6 @@ const CourseSchema = new mongoose.Schema({
   description: String,
   price: Number,
   imgURL: String,
-  published: String,
 });
 
 const Admin = mongoose.model("Admin", AdminSchema);
